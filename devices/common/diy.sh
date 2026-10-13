@@ -12,8 +12,12 @@ sed -i '/	refresh_config();/d' scripts/feeds
 sed -i "s?git.openwrt.org/\(project\|feed\)?github.com/openwrt?g" feeds.conf.default
 
 ./scripts/feeds update -a
+# Remove broken kiddin9 packages that cause CI failure
+rm -rf feeds/kiddin9/openwrt-mwgp
 ./scripts/feeds install -a -p kiddin9 -f
 ./scripts/feeds install -a
+# Add GC9307 screen driver (from immortalwrt-xgpv3)
+cp -r $SHELL_FOLDER/diy/package/kmod-fb-tft-gc9307 package/kernel/ 2>/dev/null || cp -r devices/common/diy/package/kmod-fb-tft-gc9307 package/kernel/
 
 sed --follow-symlinks -i "s#%C\"#%C by Kiddin'\"#" package/base-files/files/etc/os-release
 sed -i -e '$a /etc/bench.log' \
