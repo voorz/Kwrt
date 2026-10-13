@@ -14,6 +14,11 @@ sed -i "s?git.openwrt.org/\(project\|feed\)?github.com/openwrt?g" feeds.conf.def
 ./scripts/feeds update -a
 # Remove broken kiddin9 packages that cause CI failure
 rm -rf feeds/kiddin9/openwrt-mwgp
+# kiddin9's docker stack (dockerd 27.3.1) pins containerd 1.7.22 via a build-time
+# version check, but the packages feed ships containerd 2.2.5 -> build fails.
+# Drop the stale kiddin9 docker packages and use the version-consistent
+# official packages feed set instead (dockerd/docker 29.6.1, containerd 2.2.5).
+rm -rf feeds/kiddin9/dockerd feeds/kiddin9/docker feeds/kiddin9/docker-compose feeds/kiddin9/containerd feeds/kiddin9/runc
 ./scripts/feeds install -a -p kiddin9 -f
 ./scripts/feeds install -a
 # Add GC9307 screen driver (from immortalwrt-xgpv3)
