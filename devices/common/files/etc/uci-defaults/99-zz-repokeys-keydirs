@@ -1,8 +1,10 @@
 #!/bin/sh
-# Ensure package-manager key directories exist for LuCI "Repo Public Keys" page
+# Ensure package-manager key directory exists for LuCI "Repo Public Keys" page
 # (luci-mod-system -> admin/system/admin/repokeys).
 # repokeys.js does fs.list(KEYDIR) without handling a missing directory,
-# so the page 404s with NotFoundError when neither /etc/apk/keys nor
-# /etc/opkg/keys exists (default on opkg-based Kwrt builds).
-mkdir -p /etc/opkg/keys /etc/apk/keys
+# so the page 404s with NotFoundError when the key dir doesn't exist
+# (default on opkg-based Kwrt builds).
+# NOTE: only create /etc/opkg/keys — creating /etc/apk/keys as well would make
+# repokeys.js prefer the APK/PEM branch on an opkg system (it checks apk dir first).
+mkdir -p /etc/opkg/keys
 exit 0
