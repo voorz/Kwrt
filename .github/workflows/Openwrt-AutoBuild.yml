@@ -158,6 +158,17 @@ jobs:
         cd openwrt/bin/targets/*/*/
         cp $GITHUB_WORKSPACE/openwrt/.config rockchip_armv8.config || true
 
+    - name: Verify xiguapi-v3 artifact
+      run: |
+        cd openwrt/bin/targets/*/*/
+        img=$(ls *nlnet_xiguapi-v3*squashfs-sysupgrade.img.gz 2>/dev/null || true)
+        if [ -z "$img" ]; then
+          echo "::error::nlnet_xiguapi-v3 sysupgrade image missing — device selection was dropped, failing the build"
+          ls -la
+          exit 1
+        fi
+        echo "OK: $img"
+
     - name: Upload firmware for release
       uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
