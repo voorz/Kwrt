@@ -135,6 +135,15 @@ jobs:
         make defconfig
         cat .config
 
+    - name: Verify device selection
+      run: |
+        if ! grep -q '^CONFIG_TARGET_rockchip_armv8_DEVICE_nlnet_xiguapi-v3=y' openwrt/.config; then
+          echo "::error::nlnet_xiguapi-v3 is not the selected device in the effective config - the selection was dropped by defconfig"
+          grep -E '^CONFIG_TARGET_.*DEVICE.*=y' openwrt/.config || true
+          exit 1
+        fi
+        echo "OK: nlnet_xiguapi-v3 selected"
+
     - name: Cache
       uses: stupidloud/cachewrtbuild@main
       with:
